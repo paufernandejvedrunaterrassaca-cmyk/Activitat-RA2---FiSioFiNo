@@ -2,6 +2,10 @@ package com.fisiofino.database;
 
 
 import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import com.fisiofino.model.MalaltiaPacient;
@@ -11,11 +15,30 @@ public class GestioPacients {
 
 //Apartat 1: Insercions a partir del XML
     public int CreatePatient(Pacient p) throws SQLException {
-
         int idPacient = 0;
+        String sql = "INSERT INTO patient (given_name, family_name, nif, birth_date, gender, address, city, postal_code, country, telephone, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        /**************** HAS DE COMPLETAR EL CODI *******************/
+        try (Connection conn = Connexio.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, p.getGivenName());
+            ps.setString(2, p.getFamilyName());
+            ps.setString(3, p.getDni());
+            ps.setDate(4, Date.valueOf(p.getBirthDate()));
+            ps.setString(5, p.getGender());
+            ps.setString(6, p.getAddress());
+            ps.setString(7, p.getCity());
+            ps.setString(8, p.getPostalCode());
+            ps.setString(9, p.getCountry());
+            ps.setString(10, p.getTelephone());
+            ps.setString(11, p.getEmail());
+            ps.executeUpdate();
 
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idPacient = rs.getInt(1);
+                }
+            }
+        }
         return idPacient;
     }
 
@@ -69,7 +92,7 @@ public class GestioPacients {
     public boolean updateStatus (int idPacient, String snomedCode, String status) throws SQLException {
         boolean modificat = false;
 
-        /**************** HAS DE COMPLETAR EL CODI *******************/
+        /**************** HAS DE COMPLETAR EL CODI *******************/ 
 
         return  modificat;
     }
